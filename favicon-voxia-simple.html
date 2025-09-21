@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Favicon VOXIA Inmediato</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e40af;
+            margin-bottom: 20px;
+        }
+        canvas {
+            border: 2px solid #1e40af;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        button {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px;
+            width: 100%;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .preview {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+        .browser-tab {
+            background: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 6px 6px 0 0;
+            padding: 8px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            margin: 5px;
+        }
+        .demo-favicon {
+            width: 16px;
+            height: 16px;
+            background: #1e40af;
+            border-radius: 2px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .instructions {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #1e40af;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #1e40af;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Favicon VOXIA</h1>
+        <p>Genera el favicon personalizado de VOXIA para las pestañas del navegador</p>
+        
+        <canvas id="faviconCanvas" width="32" height="32"></canvas>
+        
+        <button onclick="generateAndDownload()">🎨 Generar y Descargar Favicon</button>
+        <button onclick="updateCurrentPage()">🔄 Actualizar Esta Pestaña</button>
+        
+        <div class="preview">
+            <h3>Vista previa:</h3>
+            <div class="browser-tab">
+                <div class="demo-favicon">V</div>
+                VOXIA - Asistente de IA
+            </div>
+            <div class="browser-tab">
+                <div class="demo-favicon">V</div>
+                Síntesis de Voz en Español
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 Instrucciones:</h3>
+            <ol>
+                <li><strong>Generar:</strong> Clic en "Generar y Descargar"</li>
+                <li><strong>Guardar:</strong> El archivo se descarga como <code>favicon.ico</code></li>
+                <li><strong>Reemplazar:</strong> Guardar en <code>public/favicon.ico</code></li>
+                <li><strong>Limpiar caché:</strong> Presionar <code>Ctrl + F5</code></li>
+                <li><strong>¡Listo!</strong> El favicon de VOXIA aparecerá</li>
+            </ol>
+        </div>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('faviconCanvas');
+        const ctx = canvas.getContext('2d');
+        const statusDiv = document.getElementById('status');
+        
+        function drawVoxiaFavicon() {
+            // Limpiar canvas
+            ctx.clearRect(0, 0, 32, 32);
+            
+            // Fondo azul VOXIA
+            ctx.fillStyle = '#1e40af';
+            ctx.fillRect(0, 0, 32, 32);
+            
+            // Borde redondeado sutil
+            ctx.fillStyle = '#1e40af';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, 32, 32, 3);
+            ctx.fill();
+            
+            // Letra V prominente
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 18px Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('V', 16, 11);
+            
+            // Punto decorativo para el micrófono
+            ctx.fillStyle = '#60a5fa';
+            ctx.beginPath();
+            ctx.arc(16, 22, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Highlight sutil
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.beginPath();
+            ctx.arc(12, 8, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        function generateAndDownload() {
+            drawVoxiaFavicon();
+            
+            // Crear diferentes tamaños
+            const sizes = [16, 32];
+            sizes.forEach(size => {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = size;
+                tempCanvas.height = size;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // Redimensionar favicon
+                tempCtx.drawImage(canvas, 0, 0, 32, 32, 0, 0, size, size);
+                
+                // Descargar
+                const link = document.createElement('a');
+                link.download = size === 32 ? 'favicon.ico' : `favicon-${size}x${size}.png`;
+                link.href = tempCanvas.toDataURL('image/png');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            
+            statusDiv.innerHTML = `
+                <div class="success">
+                    <strong>✅ Favicon generado exitosamente!</strong><br>
+                    📥 Archivos descargados: favicon.ico y favicon-16x16.png<br>
+                    📂 Guardar favicon.ico en: <code>public/favicon.ico</code><br>
+                    🔄 Presionar Ctrl+F5 para limpiar caché del navegador
+                </div>
+            `;
+            
+            console.log('✅ Favicon VOXIA descargado');
+        }
+        
+        function updateCurrentPage() {
+            drawVoxiaFavicon();
+            
+            // Obtener datos del favicon
+            const faviconData = canvas.toDataURL('image/png');
+            
+            // Buscar favicon existente o crear uno nuevo
+            let faviconLink = document.querySelector('link[rel="icon"]') ||
+                             document.querySelector('link[rel="shortcut icon"]');
+            
+            if (!faviconLink) {
+                faviconLink = document.createElement('link');
+                faviconLink.rel = 'icon';
+                faviconLink.type = 'image/png';
+                document.head.appendChild(faviconLink);
+            }
+            
+            // Actualizar favicon
+            faviconLink.href = faviconData;
+            
+            statusDiv.innerHTML = `
+                <div class="success">
+                    <strong>🔄 Favicon actualizado en esta pestaña!</strong><br>
+                    ✨ Deberías ver la "V" de VOXIA en la pestaña ahora<br>
+                    💡 Para aplicar permanentemente, descarga y guarda el archivo
+                </div>
+            `;
+            
+            console.log('🔄 Favicon actualizado dinámicamente');
+        }
+        
+        // Polyfill para roundRect si no está disponible
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+            };
+        }
+        
+        // Dibujar favicon al cargar la página
+        window.onload = function() {
+            drawVoxiaFavicon();
+        };
+    </script>
+</body>
+</html>

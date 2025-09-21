@@ -1,0 +1,33 @@
+{
+  "short_name": "VOXIA",
+  "name": "VOXIA - Asistente de IA con Síntesis de Voz",
+  "description": "Asistente de IA avanzado con síntesis de voz en español para conversaciones naturales",  "icons": [
+    {
+      "src": "voxia-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "voxia-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "voxia-og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1e40af",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "education", "business"],
+  "lang": "es",
+  "scope": "/",
+  "prefer_related_applications": false
+}

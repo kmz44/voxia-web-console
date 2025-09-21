@@ -1,0 +1,34 @@
+# Configuración adicional para VOXIA en producción
+# Archivo para resolver problemas de CSP y CORS en hosting
+
+# Permitir frame de YouTube específicamente
+<LocationMatch "/(youtube|embed)">
+    Header always set X-Frame-Options "ALLOWALL"
+</LocationMatch>
+
+# Configuración especial para manifest.json
+<Files "manifest.json">
+    Header set Content-Type "application/manifest+json"
+    Header set Cache-Control "public, max-age=86400"
+    Header always set Access-Control-Allow-Origin "*"
+</Files>
+
+# Configuración para archivos de audio/video
+<FilesMatch "\.(wav|mp3|mp4|webm|ogg|m4a)$">
+    Header always set Access-Control-Allow-Origin "*"
+    Header set Content-Security-Policy "media-src 'self' data: blob: https:"
+</FilesMatch>
+
+# Configuración para Workers y Blobs
+<FilesMatch "\.(js|mjs)$">
+    Header always append Content-Security-Policy "worker-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https:"
+</FilesMatch>
+
+# Headers específicos para YouTube API
+SetEnvIf Origin "^https?://(www\.)?(youtube\.com|googleapis\.com|google\.com)$" CORS_ALLOWED_ORIGIN=$0
+Header always set Access-Control-Allow-Origin "%{CORS_ALLOWED_ORIGIN}e" env=CORS_ALLOWED_ORIGIN
+
+# Configuración para archivos estáticos con CSP relajado
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2)$">
+    Header unset Content-Security-Policy
+</FilesMatch>

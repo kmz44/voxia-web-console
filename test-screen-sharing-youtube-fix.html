@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Screen Sharing + YouTube Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-step {
+            margin: 15px 0;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .test-step.active {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+        .test-step.passed {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .test-step.failed {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test: Corrección Screen Sharing + YouTube</h1>
+        
+        <div class="instructions">
+            <h3>📱 Instrucciones de Prueba</h3>
+            <p><strong>Problema reportado:</strong> "Cuando reproduzco una canción y luego activo screen sharing, el video se cierra"</p>
+            <p><strong>Solución aplicada:</strong> Deshabilitar auto-minimize cuando YouTube está activo</p>
+        </div>
+
+        <div class="test-step" id="step1">
+            <h3>1. 🎵 Abrir YouTube y reproducir una canción</h3>
+            <p>Abrir el panel de YouTube y comenzar la reproducción de cualquier video/canción</p>
+            <button onclick="openMainApp()">Abrir Aplicación Principal</button>
+            <button onclick="markStep('step1', 'passed')">✅ YouTube Reproduciendo</button>
+            <div class="status" id="status1"></div>
+        </div>
+
+        <div class="test-step" id="step2">
+            <h3>2. 📺 Activar Screen Sharing</h3>
+            <p>Mientras YouTube está reproduciéndose, activar la función de compartir pantalla</p>
+            <button onclick="markStep('step2', 'passed')">✅ Screen Sharing Activo</button>
+            <button onclick="markStep('step2', 'failed')">❌ Error al Activar</button>
+            <div class="status" id="status2"></div>
+        </div>
+
+        <div class="test-step" id="step3">
+            <h3>3. 🔍 Verificar YouTube Permanece Activo</h3>
+            <p><strong>RESULTADO ESPERADO:</strong> YouTube debe permanecer visible y reproduciendo</p>
+            <p><strong>COMPORTAMIENTO ANTERIOR (BUG):</strong> YouTube se cerraba automáticamente</p>
+            <button onclick="markStep('step3', 'passed')">✅ YouTube Sigue Activo</button>
+            <button onclick="markStep('step3', 'failed')">❌ YouTube se Cerró</button>
+            <div class="status" id="status3"></div>
+        </div>
+
+        <div class="test-step" id="step4">
+            <h3>4. 📱 Verificar en Mobile</h3>
+            <p>Repetir la misma prueba en dispositivo móvil o con DevTools en modo móvil</p>
+            <button onclick="markStep('step4', 'passed')">✅ Funciona en Mobile</button>
+            <button onclick="markStep('step4', 'failed')">❌ Falla en Mobile</button>
+            <div class="status" id="status4"></div>
+        </div>
+
+        <div id="finalResult" style="display: none; margin-top: 20px; padding: 20px; border-radius: 10px;"></div>
+
+        <div style="margin-top: 30px; padding: 15px; background: #e9ecef; border-radius: 5px;">
+            <h4>🔧 Cambios Técnicos Aplicados:</h4>
+            <ul>
+                <li><code>autoMinimizeOnVideoStream: false</code> en App.tsx</li>
+                <li>Lógica mejorada en <code>handleVideoStreamChange</code></li>
+                <li>Detección de YouTube activo en <code>use-youtube-panel.ts</code></li>
+                <li>Preservación de YouTube en <code>use-screen-sharing-youtube.ts</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let passedSteps = 0;
+        let totalSteps = 4;
+
+        function openMainApp() {
+            window.open('http://localhost:3000', '_blank');
+        }
+
+        function markStep(stepId, result) {
+            const step = document.getElementById(stepId);
+            const status = document.getElementById(stepId.replace('step', 'status'));
+            
+            step.className = 'test-step ' + result;
+            
+            if (result === 'passed') {
+                status.innerHTML = '✅ PASÓ - Comportamiento correcto';
+                status.style.color = '#28a745';
+                passedSteps++;
+            } else if (result === 'failed') {
+                status.innerHTML = '❌ FALLÓ - Necesita revisión';
+                status.style.color = '#dc3545';
+            }
+
+            updateFinalResult();
+        }
+
+        function updateFinalResult() {
+            const finalResult = document.getElementById('finalResult');
+            
+            if (passedSteps === totalSteps) {
+                finalResult.style.display = 'block';
+                finalResult.style.background = '#d4edda';
+                finalResult.style.border = '2px solid #28a745';
+                finalResult.innerHTML = `
+                    <h3>🎉 ¡ÉXITO! Problema Corregido</h3>
+                    <p>✅ YouTube permanece activo durante screen sharing</p>
+                    <p>✅ La funcionalidad funciona correctamente en mobile</p>
+                    <p><strong>Estado:</strong> Problema resuelto completamente</p>
+                `;
+            } else if (passedSteps > 0) {
+                finalResult.style.display = 'block';
+                finalResult.style.background = '#fff3cd';
+                finalResult.style.border = '2px solid #ffc107';
+                finalResult.innerHTML = `
+                    <h3>⚠️ Parcialmente Funcional</h3>
+                    <p>Progreso: ${passedSteps}/${totalSteps} pruebas pasadas</p>
+                    <p>Se requiere ajuste adicional en las pruebas que fallaron</p>
+                `;
+            }
+        }
+
+        // Log para depuración
+        console.log('🧪 Test Screen Sharing + YouTube Fix cargado');
+        console.log('📱 Listo para probar la corrección del bug mobile');
+    </script>
+</body>
+</html>
